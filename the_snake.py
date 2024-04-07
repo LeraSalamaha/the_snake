@@ -43,17 +43,22 @@ clock = pygame.time.Clock()
 
 
 class GameObject:
-    """Экран"""
+    """создание игрового объекта, задание его цвета и позиции на экране"""
 
     def __init__(self, body_color=APPLE_COLOR) -> None:
 
         self.position = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         self.body_color = body_color
 
-    """заглушка"""
     def draw(self):
         """заглушка"""
-        pass
+        raise NotImplementedError
+
+    def draw_cell(self, position) -> None:
+        """Отрисовка ячейки"""
+        body_rect = pygame.Rect(position, (GRID_SIZE, GRID_SIZE))
+        pygame.draw.rect(screen, self.body_color, body_rect)
+        pygame.draw.rect(screen, BORDER_COLOR, body_rect, 1)
 
 
 class Apple(GameObject):
@@ -113,20 +118,16 @@ class Snake(GameObject):
 
     def draw(self):
         """отрисовка"""
-        for position in self.positions:
-            rect = pygame.Rect(position, (GRID_SIZE, GRID_SIZE))
-            pygame.draw.rect(screen, self.body_color, rect)
-            pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
+        rect = pygame.Rect(self.positions[0], (GRID_SIZE, GRID_SIZE))
+        pygame.draw.rect(screen, self.body_color, rect)
+        pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
 
-        """ Отрисовка головы змейки"""
-        head_rect = pygame.Rect(self.positions[0], (GRID_SIZE, GRID_SIZE))
-        pygame.draw.rect(screen, self.body_color, head_rect)
-        pygame.draw.rect(screen, BORDER_COLOR, head_rect, 1)
-
-        """Затирание последнего сегмента"""
         if self.last:
             last_rect = pygame.Rect(self.last, (GRID_SIZE, GRID_SIZE))
             pygame.draw.rect(screen, BOARD_BACKGROUND_COLOR, last_rect)
+
+        for position in self.positions[1:]:
+            self.draw_cell(position)
 
     def move(self):
         """Обновляет змеи"""
