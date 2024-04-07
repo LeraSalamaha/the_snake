@@ -29,7 +29,7 @@ APPLE_COLOR = (255, 0, 0)
 SNAKE_COLOR = (0, 255, 0)
 
 """Скорость движения змейки
-уменьшила так как удобнее было тестировать""" 
+уменьшила так как удобнее было тестировать"""
 SPEED = 10
 
 """Настройка игрового окна:"""
@@ -60,7 +60,6 @@ class Apple(GameObject):
     """Яблоко"""
 
     def __init__(self, body_color=APPLE_COLOR) -> None:
-    
         super().__init__(body_color)
         self.position = self.randomize_position([])
 
@@ -95,17 +94,17 @@ class Snake(GameObject):
         self.next_direction = None
         self.last = None
         self.reset()
-    
+
     def get_head_position(self):
         """первый элемент змеи(голова)"""
         return self.positions[0]
 
-    """Метод обновления направления после нажатия на кнопку"""    
+    """Метод обновления направления после нажатия на кнопку"""
     def update_direction(self):
-        """Метод обновления направления после нажатия на кнопку""" 
+        """Метод обновления направления после нажатия на кнопку"""
         if self.next_direction:
             self.direction = self.next_direction
-    
+
     def reset(self):
         """обновление змейки"""
         self.length = 1
@@ -146,7 +145,7 @@ class Snake(GameObject):
             self.positions.insert(0, new_head)
             if len(self.positions) > self.length:
                 self.positions.pop()
- 
+
 
 def handle_keys(game_object):
     """Обработка нажитий на клавиши"""
