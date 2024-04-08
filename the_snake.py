@@ -126,7 +126,7 @@ class Snake(GameObject):
             self.draw_cell(position)
 
     def move(self):
-        """Обновляет змеи"""
+        """Обновляет змейку"""
         if self.next_direction:
             self.direction = self.next_direction
             self.next_direction = None
