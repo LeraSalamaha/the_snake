@@ -163,7 +163,7 @@ def handle_keys(game_object):
 
 
 def main() -> None:
-    """основная функция"""
+    """Основная функция"""
     apple = Apple()
     snake = Snake()
 
