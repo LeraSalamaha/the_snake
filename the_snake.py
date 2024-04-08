@@ -43,7 +43,7 @@ clock = pygame.time.Clock()
 
 
 class GameObject:
-    """создание игрового объекта, задание его цвета и позиции на экране"""
+    """описание игрового поля"""
 
     def __init__(self, body_color=APPLE_COLOR) -> None:
 
@@ -82,9 +82,7 @@ class Apple(GameObject):
 
     def draw(self):
         """Отрисовывает объект на экране."""
-        rect = pygame.Rect(self.position, (GRID_SIZE, GRID_SIZE))
-        pygame.draw.rect(screen, self.body_color, rect)
-        pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
+        self.draw_cell(self.position)
 
 
 class Snake(GameObject):
@@ -98,7 +96,6 @@ class Snake(GameObject):
         self.direction = RIGHT
         self.next_direction = None
         self.last = None
-        self.reset()
 
     def get_head_position(self):
         """первый элемент змеи(голова)"""
@@ -118,15 +115,14 @@ class Snake(GameObject):
 
     def draw(self):
         """отрисовка"""
-        rect = pygame.Rect(self.positions[0], (GRID_SIZE, GRID_SIZE))
-        pygame.draw.rect(screen, self.body_color, rect)
-        pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
+        cur_head = self.get_head_position()
+        self.draw_cell(cur_head)
 
         if self.last:
             last_rect = pygame.Rect(self.last, (GRID_SIZE, GRID_SIZE))
             pygame.draw.rect(screen, BOARD_BACKGROUND_COLOR, last_rect)
 
-        for position in self.positions[1:]:
+        for position in self.positions[::]:
             self.draw_cell(position)
 
     def move(self):
@@ -135,10 +131,11 @@ class Snake(GameObject):
             self.direction = self.next_direction
             self.next_direction = None
 
-        cur_head = self.get_head_position()
+        cur_head_x, cur_head_y = self.get_head_position()
+
         x, y = self.direction
-        new_head = ((cur_head[0] + (x * GRID_SIZE)) % SCREEN_WIDTH,
-                    (cur_head[1] + (y * GRID_SIZE)) % SCREEN_HEIGHT)
+        new_head = ((cur_head_x + (x * GRID_SIZE)) % SCREEN_WIDTH,
+                    (cur_head_y + (y * GRID_SIZE)) % SCREEN_HEIGHT)
 
         if len(self.positions) > 2 and new_head in self.positions[2:]:
             self.reset()
