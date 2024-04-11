@@ -43,7 +43,7 @@ clock = pygame.time.Clock()
 
 
 class GameObject:
-    """описание игрового поля"""
+    """Экран объекта"""
 
     def __init__(self, body_color=APPLE_COLOR) -> None:
 
@@ -59,6 +59,12 @@ class GameObject:
         body_rect = pygame.Rect(position, (GRID_SIZE, GRID_SIZE))
         pygame.draw.rect(screen, self.body_color, body_rect)
         pygame.draw.rect(screen, BORDER_COLOR, body_rect, 1)
+
+    def delete_cell(self, position) -> None:
+        """Отрисовка ячейки"""
+        body_rect = pygame.Rect(position, (GRID_SIZE, GRID_SIZE))
+        pygame.draw.rect(screen, BOARD_BACKGROUND_COLOR, body_rect)
+        pygame.draw.rect(screen, BOARD_BACKGROUND_COLOR, body_rect, 1)
 
 
 class Apple(GameObject):
@@ -112,18 +118,20 @@ class Snake(GameObject):
         self.length = 1
         self.positions = [self.position]
         self.next_direction = None
+        screen.fill(BOARD_BACKGROUND_COLOR)
 
     def draw(self):
         """отрисовка"""
         cur_head = self.get_head_position()
         self.draw_cell(cur_head)
 
-        if self.last:
-            last_rect = pygame.Rect(self.last, (GRID_SIZE, GRID_SIZE))
-            pygame.draw.rect(screen, BOARD_BACKGROUND_COLOR, last_rect)
+        self.draw_cell(self.last)
 
-        for position in self.positions[::]:
-            self.draw_cell(position)
+    def add_cell(self):
+        """добавляем клетку когда змея кусает яблоко"""
+        self.length += 1
+        self.draw_cell(self.positions[0])
+        self.move()
 
     def move(self):
         """Обновляет змейку"""
@@ -142,7 +150,8 @@ class Snake(GameObject):
         else:
             self.positions.insert(0, new_head)
             if len(self.positions) > self.length:
-                self.positions.pop()
+                self.delete_cell(self.positions.pop())
+                self.last = self.positions[-1]
 
 
 def handle_keys(game_object):
@@ -172,13 +181,11 @@ def main() -> None:
 
         handle_keys(snake)
         snake.move()
-
         if snake.get_head_position() == apple.position:
             """змея съела яблоко"""
-            snake.length += 1
             apple.position = apple.randomize_position(snake.positions)
+            snake.add_cell()
 
-        screen.fill(BOARD_BACKGROUND_COLOR)
         snake.draw()
         apple.draw()
 
