@@ -43,7 +43,7 @@ clock = pygame.time.Clock()
 
 
 class GameObject:
-    """Экран объекта"""
+    """Базовый класс"""
 
     def __init__(self, body_color=APPLE_COLOR) -> None:
 
